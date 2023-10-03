@@ -167,7 +167,7 @@ class Rules {
       for (let j = 0; j < choices.length; ++j) {
         if (i === j) continue;
 
-        if (this._rule_board[choices[i]].includes(choices[j])) {
+        if (!this._rule_board[choices[i]].includes(choices[j])) {
           winning_choice_idx = -1;
           break;
         }
