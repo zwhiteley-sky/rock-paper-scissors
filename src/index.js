@@ -272,14 +272,55 @@ class HumanPlayer extends Player {
  * @returns {Rules} The rules the player has chosen.
  */
 function get_rules() {
+  let choice = prompt("[C]reate or [L]oad game: ");
+
+  if (choice[0].toLowerCase() === "c") return create_rules();
+
   for (;;) {
     let game_path = prompt("RPS-style game path: ");
+
     try {
       return new Rules(game_path);
     } catch {
       console.error("Invalid file!");
     }
   }
+}
+
+/**
+ * Ask the player to create a set of rules for the game.
+ * @returns {Rules} The rules the player created.
+ */
+function create_rules() {
+    let rules = new Rules();
+    const rule_regex = /(\w+) beats (\w+)/i;
+
+    console.log();
+    console.log("NOTE: To finish inputting rules, leave the prompt blank.");
+    console.log();
+    for ( ; ; ) {
+        let rule_str = prompt("Enter a rule in the format 'X beats Y': ");
+        
+        if (!rule_str) break;
+
+        let result = rule_regex.exec(rule_str);
+
+        if (!result) {
+            console.log("Invalid format");
+            continue;
+        }
+
+        try {
+            rules.add_rule(result[2], result[1]);
+        } catch {
+            console.log("Rule conflicts with another rule!");
+        }
+    }
+
+    let path = prompt("Where do you want to save the rules: ");
+    rules.save(path);
+
+    return rules;
 }
 
 /**
