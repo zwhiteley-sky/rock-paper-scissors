@@ -4,7 +4,7 @@
  * These rules consist of two components: the choices a player can
  * make (e.g., Rock) and the choice hierarchy (e.g., Rock beats Scissors).
  */
-class Rules {
+export class Rules {
   /**
    * Create a new rules.
    *
@@ -82,8 +82,14 @@ class Rules {
    * @throws {RuleError} if the rule is contradictory.
    */
   add_rule(rule) {
-    if (!this._rule_board[rule.beater]) this.add_choice(rule.beater);
-    if (!this._rule_board[rule.beaten]) this.add_choice(rule.beaten);
+    if (rule.beater === rule.beaten)
+      throw new RuleError(
+        "Cannot create rule where beater and beaten are the same"
+      );
+
+    this.add_choice(rule.beater);
+    this.add_choice(rule.beaten);
+
     if (this._rule_board[rule.beater].includes(rule.beaten)) return;
     if (this._rule_board[rule.beaten].includes(rule.beater))
       throw new RuleError(
@@ -146,7 +152,7 @@ class Rules {
 /**
  * A rule in an RPS-style game.
  */
-class Rule {
+export class Rule {
   /**
    * Create a rule.
    * @param {string} beater - The choice which beats `beaten`.
@@ -161,7 +167,7 @@ class Rule {
 /**
  * A rule error.
  */
-class RuleError extends Error {
+export class RuleError extends Error {
   constructor(msg) {
     super(`Invalid rule: ${msg}`);
   }
@@ -173,7 +179,7 @@ class RuleError extends Error {
  * This is an abstract class -- inheritors should define their own
  * get_choice function which returns the choice the player makes.
  */
-class Player {
+export class Player {
   /**
    * Create a new player.
    * @param {string} name - The name of the player
@@ -195,7 +201,7 @@ class Player {
 /**
  * An AI player.
  */
-class AiPlayer extends Player {
+export class AiPlayer extends Player {
   /**
    * Create a new AI player.
    * @param {string} number - The number of the AI player.
@@ -215,5 +221,3 @@ class AiPlayer extends Player {
     return choices[Math.floor(Math.random() * choices.length)];
   }
 }
-
-module.exports = { Rule, Rules, RuleError, Player, AiPlayer };
