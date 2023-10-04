@@ -1,0 +1,52 @@
+#control-panel {
+    padding: 20px;
+}
+
+#loader:hover {
+    transform: translate(-7px, 5px);
+    box-shadow: 7px -5px 0 0 green;
+}
+
+#template:hover {
+    transform: translate(-7px, 5px);
+    box-shadow: 7px -5px 0 0 blue;
+}
+
+#back:hover {
+    transform: translate(-7px, 5px);
+    box-shadow: 7px -5px 0 0 red;
+}
+
+section.editor {
+    display: flex;
+    padding: 20px;
+}
+
+section.editor canvas {
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.control-button:first-child {
+    margin-top: 0;
+}
+
+.control-button {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.add-button:hover {
+    transform: translate(-7px, 5px);
+    box-shadow: 7px -5px 0 0 green;
+}
+
+.save-button:hover {
+    transform: translate(-7px, 5px);
+    box-shadow: 7px -5px 0 0 purple;
+}
+
+.delete-button:hover {
+    transform: translate(-7px, 5px);
+    box-shadow: 7px -5px 0 0 red;
+}

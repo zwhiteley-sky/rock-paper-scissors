@@ -3,10 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="editor.css">
     <title>RPS Game Runner</title>
 </head>
 <body>
+    <header>
+        <h1>Rock Paper Scissors</h1>
+    </header>
+
+    <section id="control-panel">
+        <button id="loader">Load</button>
+        <button id="template">Template</button>
+        <input id="file" type="file" style="display: none;">
+        <button id="back" style="float: right">Back</button>
+    </section>
+
     <script type="module" src="editor.js"></script>
-    <canvas id="editor" width="500" height="500"></canvas>
 </body>
 </html>

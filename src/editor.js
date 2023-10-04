@@ -22,8 +22,7 @@ class RuleEditor {
      * @type {CanvasRenderingContext2D}
      */
     this.ctx = canvas.getContext("2d");
-    this.ctx.lineCap = "round";
-    this.ctx.lineJoin = "round";
+    this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
     /**
      * The current ruleset.
@@ -39,10 +38,18 @@ class RuleEditor {
 
     // Mouse interaction
     this.canvas.addEventListener("mousemove", (ev) => {
-      this.draw({ x: ev.clientX, y: ev.clientY, button: null });
+      this.draw({ 
+        x: ev.offsetX,
+        y: ev.offsetY,
+        button: null 
+      });
     });
     this.canvas.addEventListener("mousedown", (ev) => {
-      this.draw({ x: ev.clientX, y: ev.clientY, button: ev.button });
+      this.draw({ 
+        x: ev.offsetX,
+        y: ev.offsetY,
+        button: ev.button 
+      });
     });
 
     // Prevent the right-click context menu from appearing
@@ -71,8 +78,10 @@ class RuleEditor {
   draw(mouse_info) {
     this.clear();
 
+    const scale = window.devicePixelRatio;
+
     // The centre of the canvas
-    const centre = new Point(this.canvas.width / 2, this.canvas.height / 2);
+    const centre = new Point(this.canvas.width / scale / 2, this.canvas.height / scale / 2);
 
     // Ensures the first "bubble" is directly above the centre.
     const offset = -Math.PI / 2;
@@ -82,15 +91,18 @@ class RuleEditor {
 
     // The distance of the bubbles from the centre .
     const length = Math.max(
-      Math.min(this.canvas.width / 4, this.canvas.height / 4),
+      Math.min(this.canvas.width / scale / 4, this.canvas.height / scale / 4),
       30
     );
 
     // The radius of the bubbles.
     const radius = Math.min(50, length);
 
+    // The size of the text.
+    const text_size = 18;
+
     // The thickness of the lines.
-    const line_thickness = 5;
+    const line_thickness = 4;
 
     // The thickness of the arrow lines.
     const arrow_thickness = 1;
@@ -161,12 +173,12 @@ class RuleEditor {
 
       // Draw the bubble
       this.ctx.beginPath();
-      this.ctx.arc(bubble_centre.x, bubble_centre.y, radius, 0, 2 * Math.PI);
+      this.ctx.arc(bubble_centre.x, bubble_centre.y, radius, 0, 3 * Math.PI);
       this.ctx.stroke();
 
       // Draw the text within the bubble
       this.ctx.lineWidth = text_thickness;
-      this.ctx.font = "15px monospace";
+      this.ctx.font = `${text_size}px monospace`;
       this.ctx.textAlign = "center";
       this.ctx.textBaseline = "middle";
       this.ctx.fillText(
@@ -291,13 +303,90 @@ class RuleEditor {
   }
 }
 
+/**
+ * Create a new editing area.
+ * @param {Rules} rules - The initial ruleset.
+ */
+function create_area(rules) {
+  let section = document.createElement("section");
+  section.className = "editor";
 
-let rules = new Rules();
-rules.add_rule(new Rule("Paper", "Rock"));
-rules.add_rule(new Rule("Scissors", "Paper"));
-rules.add_rule(new Rule("Rock", "Scissors"));
-rules.add_rule(new Rule("Fire", "Rock"));
-rules.add_rule(new Rule("Fire", "Paper"));
-rules.add_rule(new Rule("Fire", "Scissors"));
+  let canvas = document.createElement("canvas");
 
-let g = new RuleEditor(document.getElementById("editor"), rules);
+  // NOTE: This is to ensure a crisp image -- canvas.width, by default,
+  // uses CSS pixels because it hates us all. To force it to use the
+  // actual physical pixels, we need to scale it by window.devicePixelRatio
+  // See window.devicePixelRatio on MDN for more info
+  canvas.style.width = "500px";
+  canvas.style.height = "500px";
+  canvas.width = 500 * window.devicePixelRatio;
+  canvas.height = 500 * window.devicePixelRatio;
+
+  let editor = new RuleEditor(canvas, rules);
+
+  let buttons = document.createElement("div");
+  buttons.style.flexGrow = "1";
+
+  // The "Add Choice" button
+  let add_btn = document.createElement("button");
+  add_btn.innerText = "Add Choice";
+  add_btn.className = "control-button add-button";
+
+  add_btn.addEventListener("click", () => {
+    editor.add(prompt("Enter the name of the new option"));
+  });
+
+  // The "Save" button (for saving a file)
+  let save_btn = document.createElement("button");
+  save_btn.innerText = "Save";
+  save_btn.className = "control-button save-button";
+
+  save_btn.addEventListener("click", () => {
+    let string = editor.rules.stringify();
+    let blob = new Blob([string], { type: "text/plain" });
+
+    let a = document.createElement("a");
+    a.download = "my_game.rps";
+    a.href = window.URL.createObjectURL(blob);
+    a.click();
+  });
+
+  // The "Delete" button
+  let delete_btn = document.createElement("button");
+  delete_btn.innerText = "Delete";
+  delete_btn.className = "control-button delete-button";
+
+  delete_btn.addEventListener("click", () => {
+    document.body.removeChild(section);
+  });
+
+  buttons.appendChild(add_btn);
+  buttons.appendChild(save_btn);
+  buttons.appendChild(delete_btn);
+
+  section.appendChild(canvas);
+  section.appendChild(buttons);
+  document.body.appendChild(section);
+
+  // Scroll down to the bottom (where the newly created area will be)
+  // for convenience purposes
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+document.getElementById("loader").addEventListener("click", () => {
+  const file = document.getElementById("file");
+  file.click();
+});
+document.getElementById("file").addEventListener("change", async () => {
+  const file = document.getElementById("file");
+  let rule_file = file.files[0];
+  let rules = new Rules(await rule_file.text());
+  create_area(rules);
+});
+
+document.getElementById("template").addEventListener("click", async () => {
+  let rps_rules = await fetch("/rps.rps");
+  let rules = new Rules(await rps_rules.text());
+
+  create_area(rules);
+});
