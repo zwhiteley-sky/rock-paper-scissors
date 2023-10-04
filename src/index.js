@@ -3,6 +3,7 @@
 // language
 const prompt = require("prompt-sync")({ sigint: true });
 const fs = require("fs");
+const { Player, AiPlayer, Rules } = require("./core.js");
 
 /**
  * An RPS-style game.
@@ -71,174 +72,6 @@ class Game {
 }
 
 /**
- * The rules of the Rock-Paper-Scissors-style game.
- *
- * These rules consist of two components: the choices a player can
- * make (e.g., Rock) and the choice hierarchy (e.g., Rock beats Scissors).
- */
-class Rules {
-  /**
-   * Create a new rules.
-   *
-   * If `path` is ommitted, a blank instance will be created.
-   *
-   * @param {string?} path - A path to an RPS file to load the rules from.
-   */
-  constructor(path) {
-    if (path) this.load(path);
-    else this._rule_board = {};
-  }
-
-  /**
-   * Load rules from a file.
-   * @param {string} path - A path to an RPS file.
-   */
-  load(path) {
-    let contents = fs.readFileSync(path);
-    this._rule_board = JSON.parse(contents);
-  }
-
-  /**
-   * Save rules to a file.
-   *
-   * The file will be created/overwritten.
-   *
-   * @param {string} path - The path to the file.
-   */
-  save(path) {
-    fs.writeFileSync(path, JSON.stringify(this._rule_board));
-  }
-
-  /**
-   *
-   */
-  get choices() {
-    return Object.keys(this._rule_board);
-  }
-
-  /**
-   * Add a choice to the game.
-   *
-   * It should be noted that add_rule automatically adds the choice(s)
-   * of the rule, if they do not already exist.
-   *
-   * @param {string} name - The name of the choice.
-   */
-  add_choice(name) {
-    if (this._rule_board[name]) return;
-    this._rule_board[name] = [];
-  }
-
-  /**
-   * Adds a rule.
-   *
-   * It should be noted that this function will automatically add
-   * the choices if they do not already exist.
-   *
-   * @param {string} choice_small - The small choice (e.g., what is beaten).
-   * @param {string} choice_large - The large choice (e.g., what choice_small is beaten by).
-   * @throws {RuleError} if the rule is contradictory.
-   */
-  add_rule(choice_small, choice_large) {
-    if (!this._rule_board[choice_small]) this.add_choice(choice_small);
-    if (!this._rule_board[choice_large]) this.add_choice(choice_large);
-    if (this._rule_board[choice_large].includes(choice_small)) return;
-    if (this._rule_board[choice_small].includes(choice_large))
-      throw new RuleError(
-        `contradicting rule ${choice_small} > ${choice_large} exists`
-      );
-
-    this._rule_board[choice_large].push(choice_small);
-  }
-
-  /**
-   * Test a set of choices against the rules of the game.
-   *
-   * @param {[string]} choices - The choices
-   * @returns {number} The index of the winning choice (-1 for a tie).
-   */
-  test(choices) {
-    let winning_choice_idx = -1;
-
-    // For an choice to be "winning", it must beat all other options
-    // -- this loop checks each option until a winning choice is found.
-    for (let i = 0; i < choices.length; ++i) {
-      winning_choice_idx = i;
-      for (let j = 0; j < choices.length; ++j) {
-        if (i === j) continue;
-
-        if (!this._rule_board[choices[i]].includes(choices[j])) {
-          winning_choice_idx = -1;
-          break;
-        }
-      }
-
-      if (winning_choice_idx !== -1) return winning_choice_idx;
-    }
-
-    return -1;
-  }
-}
-
-/**
- * A rule error.
- */
-class RuleError extends Error {
-  constructor(msg) {
-    super(`Invalid rule: ${msg}`);
-  }
-}
-
-/**
- * A player of an RPS-style game.
- *
- * This is an abstract class -- inheritors should define their own
- * get_choice function which returns the choice the player makes.
- */
-class Player {
-  /**
-   * Create a new player.
-   * @param {string} name - The name of the player
-   */
-  constructor(name) {
-    this.name = name;
-    this.score = 0;
-  }
-
-  /**
-   * Get the choice of the player (e.g., Rock).
-   * @param {Rules} rules - The rules of the RPS-style game.
-   */
-  get_choice(rules) {
-    throw new TypeError("not implemented");
-  }
-}
-
-/**
- * An AI player.
- */
-class AiPlayer extends Player {
-  /**
-   * Create a new AI player.
-   * @param {string} number - The number of the AI player.
-   */
-  constructor(number) {
-    super(`Robot ${number}`);
-  }
-
-  /**
-   * Get the choice of the AI player.
-   * @param {Rules} rules - The rules of the RPS-style game.
-   * @returns {string} The choice the AI player made (it is randomly chosen
-   * from the list of possible choices).
-   */
-  get_choice(rules) {
-    let choices = rules.choices;
-    return choices[Math.floor(Math.random() * choices.length)];
-  }
-}
-
-/**
  * A human player.
  * 
  * This class blocks on stdin.
@@ -280,7 +113,7 @@ function get_rules() {
     let game_path = prompt("RPS-style game path: ");
 
     try {
-      return new Rules(game_path);
+      return new Rules(fs.readFileSync(game_path));
     } catch {
       console.error("Invalid file!");
     }
@@ -318,7 +151,7 @@ function create_rules() {
     }
 
     let path = prompt("Where do you want to save the rules: ");
-    rules.save(path);
+    fs.writeFileSync(path, rules.stringify());
 
     return rules;
 }
