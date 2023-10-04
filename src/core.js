@@ -84,8 +84,8 @@ class Rules {
   add_rule(rule) {
     if (!this._rule_board[rule.beater]) this.add_choice(rule.beater);
     if (!this._rule_board[rule.beaten]) this.add_choice(rule.beaten);
-    if (this._rule_board[rule.beater].includes(rule.beater)) return;
-    if (this._rule_board[rule.beaten].includes(rule.beaten))
+    if (this._rule_board[rule.beater].includes(rule.beaten)) return;
+    if (this._rule_board[rule.beaten].includes(rule.beater))
       throw new RuleError(
         `contradicting rule ${rule.beaten} > ${rule.beater} exists`
       );
