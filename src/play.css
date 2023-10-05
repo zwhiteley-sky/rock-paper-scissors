@@ -3,18 +3,18 @@
 }
 
 #loader:hover {
-    transform: translate(-7px, 5px);
-    box-shadow: 7px -5px 0 0 green;
+    transform: translate(-8px, 6px);
+    box-shadow: 7px -5px 0 0 green, 8px -6px 0 1px black;
 }
 
 #default:hover {
-    transform: translate(-7px, 5px);
-    box-shadow: 7px -5px 0 0 blue;
+    transform: translate(-8px, 6px);
+    box-shadow: 7px -5px 0 0 blue, 8px -6px 0 1px black;
 }
 
 #back:hover {
-    transform: translate(-7px, 5px);
-    box-shadow: 7px -5px 0 0 red;
+    transform: translate(-8px, 6px);
+    box-shadow: 7px -5px 0 0 red, 8px -6px 0 1px black;
 }
 
 .playarea {
@@ -31,47 +31,90 @@
     font-size: 2em;
 }
 
-.playarea input {
-    padding: 0 20px;
-    font-size: 2em;
-    border: 1px solid black;
-    border-radius: 20px;
-}
-
-.playarea input:focus {
-    border: 1px solid blue;
-    outline: none;
-}
-
-.playarea input:required {
-    border: 1px solid black;
-}
-
-.playarea input:invalid {
-    border: 2px solid red;
-}
-
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-input[type=number] {
-  appearance: textfield;
-  -moz-appearance: textfield;
-}
-
 .playarea button.choice-btn {
     width: 5em;
     height: 5em;
 }
 
 .playarea button:hover {
-    transform: translate(-7px, 5px);
-    box-shadow: 7px -5px 0 0 orange;
+    transform: translate(-8px, 6px);
+    box-shadow: 7px -5px 0 0 orange, 8px -6px 0 1px black;
+}
+
+.playarea .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.playarea .choice-block {
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    transition: "border 1s";
+}
+
+/* Customise table to have rounded corners (it is insanely long) */
+.playarea table {
+    text-align: center;
+    width: 30%;
+    
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.playarea th, .playarea td {
+    font-size: 1.5em;
+    padding: 5px;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+}
+
+.playarea th:last-child, .playarea td:last-child {
+    border-right: 1px solid black;
+}
+
+.playarea tr:last-child * {
+    border-bottom: 1px solid black;
+}
+
+.playarea table:hover tr *:first-child {
+    border-left: 2px solid black;
+}
+
+.playarea table:hover tr *:last-child {
+    border-right: 2px solid black;
+}
+
+.playarea table:hover tr:first-child * {
+    border-top: 2px solid black;
+}
+.playarea table:hover tr:last-child * {
+    border-bottom: 2px solid black;
+}
+
+.playarea th:first-child {
+    border-top-left-radius: 20px;
+}
+
+.playarea th:last-child {
+    border-top-right-radius: 20px;
+}
+
+.playarea tr:last-child td:first-child {
+    border-bottom-left-radius: 20px;
+}
+
+.playarea tr:last-child td:last-child {
+    border-bottom-right-radius: 20px;
+}
+
+.playarea th {
+    font-weight: bold;
+}
+
+.playarea tr:nth-child(odd) td {
+    background-color: lightgray;
 }
 
 .playarea * {

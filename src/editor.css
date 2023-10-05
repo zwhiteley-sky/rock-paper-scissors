@@ -3,18 +3,18 @@
 }
 
 #loader:hover {
-    transform: translate(-7px, 5px);
-    box-shadow: 7px -5px 0 0 green;
+    transform: translate(-8px, 6px);
+    box-shadow: 7px -5px 0 0 green, 8px -6px 0 1px black;
 }
 
 #template:hover {
-    transform: translate(-7px, 5px);
-    box-shadow: 7px -5px 0 0 blue;
+    transform: translate(-8px, 6px);
+    box-shadow: 7px -5px 0 0 blue, 8px -6px 0 1px black;
 }
 
 #back:hover {
-    transform: translate(-7px, 5px);
-    box-shadow: 7px -5px 0 0 red;
+    transform: translate(-8px, 6px);
+    box-shadow: 7px -5px 0 0 red, 8px -6px 0 1px black;
 }
 
 section.editor {
@@ -37,16 +37,53 @@ section.editor canvas {
 }
 
 .add-button:hover {
-    transform: translate(-7px, 5px);
-    box-shadow: 7px -5px 0 0 green;
+    transform: translate(-8px, 6px);
+    box-shadow: 7px -5px 0 0 green, 8px -6px 0 1px black;
 }
 
 .save-button:hover {
-    transform: translate(-7px, 5px);
-    box-shadow: 7px -5px 0 0 purple;
+    transform: translate(-8px, 6px);
+    box-shadow: 7px -5px 0 0 purple, 8px -6px 0 1px black;
 }
 
 .delete-button:hover {
-    transform: translate(-7px, 5px);
-    box-shadow: 7px -5px 0 0 red;
+    transform: translate(-8px, 6px);
+    box-shadow: 7px -5px 0 0 red, 8px -6px 0 1px black;
+}
+
+#popup-background {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 100;
+}
+
+#popup-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px;
+    text-align: center;
+
+    background-color: white;
+    border-radius: 30px;
+}
+
+#popup-title {
+    user-select: none;
+    pointer-events: none;
+}
+
+#popup-input {
+    width: 80%;
+    margin-bottom: 10px;
+}
+
+input[type=submit]:hover {
+    transform: translate(-8px, 6px);
+    box-shadow: 7px -5px 0 0 green, 8px -6px 0 1px black;
 }

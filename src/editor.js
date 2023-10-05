@@ -2,6 +2,78 @@ import { Rules, Rule } from "./core.js";
 import { dist_to_segment, dist_to_point, Point, Vector } from "./maths.js";
 
 /**
+ * Display a popup to a user (works similar to prompt, but looks better).
+ * @param {string} question - The question to ask the user.
+ * @returns {Promise<string>} The user's response.
+ */
+async function display_popup(question) {
+  const popup_background = document.getElementById("popup-background");
+  const popup_form = document.getElementById("popup-form");
+  const popup_title = document.getElementById("popup-title");
+  const popup_input = document.getElementById("popup-input");
+
+  popup_background.style.display = "block";
+  popup_title.innerText = question;
+  popup_input.focus();
+
+  await wait(popup_form);
+
+  popup_background.style.display = "none";
+  let input = popup_input.value;
+  popup_input.value = "";
+
+  return input;
+}
+
+function wait(form) {
+  return new Promise((resolve) => {
+    let fn = (ev) => {
+      ev.preventDefault();
+      form.removeEventListener("submit", fn);
+      resolve();
+    };
+    form.addEventListener("submit", fn);
+  });
+}
+
+/**
+ * The dragging state of the popup:
+ *
+ * Null if not being dragged, { x: number, y: number } if being
+ * dragged.
+ */
+let dragging = null;
+
+document.getElementById("popup-box").addEventListener("mousedown", (ev) => {
+  // NOTE: if the event originates from a child object, it will
+  // interfere with the calculation and make the movement choppy
+  // -- as a result, ignore any child object events (e.g., mouse over
+  // the submit button)
+  if (document.getElementById("popup-box") !== ev.target) return;
+  dragging = { x: ev.offsetX, y: ev.offsetY };
+});
+
+document.addEventListener("mouseup", () => {
+  dragging = null;
+});
+
+document.addEventListener("mousemove", (ev) => {
+  if (!dragging) return;
+
+  const x = ev.clientX - dragging.x;
+  const y = ev.clientY - dragging.y;
+
+  const popup_box = document.getElementById("popup-box");
+
+  // NOTE: Initially, popup-box has a translate() adjustment to have
+  // it centered -- if we do not unset it, it will offset the popup,
+  // interfering with the calculation
+  popup_box.style.transform = "unset";
+  popup_box.style.top = y + "px";
+  popup_box.style.left = x + "px";
+});
+
+/**
  * A rule editor (used to edit RPS-style rules).
  */
 class RuleEditor {
@@ -38,17 +110,17 @@ class RuleEditor {
 
     // Mouse interaction
     this.canvas.addEventListener("mousemove", (ev) => {
-      this.draw({ 
+      this.draw({
         x: ev.offsetX,
         y: ev.offsetY,
-        button: null 
+        button: null,
       });
     });
     this.canvas.addEventListener("mousedown", (ev) => {
-      this.draw({ 
+      this.draw({
         x: ev.offsetX,
         y: ev.offsetY,
-        button: ev.button 
+        button: ev.button,
       });
     });
 
@@ -81,7 +153,10 @@ class RuleEditor {
     const scale = window.devicePixelRatio;
 
     // The centre of the canvas
-    const centre = new Point(this.canvas.width / scale / 2, this.canvas.height / scale / 2);
+    const centre = new Point(
+      this.canvas.width / scale / 2,
+      this.canvas.height / scale / 2
+    );
 
     // Ensures the first "bubble" is directly above the centre.
     const offset = -Math.PI / 2;
@@ -332,8 +407,8 @@ function create_area(rules) {
   add_btn.innerText = "Add Choice";
   add_btn.className = "control-button add-button";
 
-  add_btn.addEventListener("click", () => {
-    editor.add(prompt("Enter the name of the new option"));
+  add_btn.addEventListener("click", async () => {
+    editor.add(await display_popup("Enter the name of the new option"));
   });
 
   // The "Save" button (for saving a file)

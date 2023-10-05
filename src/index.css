@@ -12,11 +12,11 @@ a {
 }
 
 #play:hover {
-    transform: translate(-7px, 5px);
-    box-shadow: 7px -5px 0 0 green;
+    transform: translate(-8px, 6px);
+    box-shadow: 7px -5px 0 0 green, 8px -6px 0 1px black;
 }
 
 #edit:hover {
-    transform: translate(-7px, 5px);
-    box-shadow: 7px -5px 0 0 blue;
+    transform: translate(-8px, 6px);
+    box-shadow: 7px -5px 0 0 blue, 8px -6px 0 1px black;
 }
