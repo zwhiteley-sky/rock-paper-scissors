@@ -327,7 +327,10 @@ class Game {
     header.appendChild(player_score);
     table.appendChild(header);
 
-    for (let player of this.players.sort((p1, p2) => p2.score - p1.score)) {
+    // A clone of the array has to be used or the sorting will move the
+    // PseudoPlayer to another index
+    let sorted_players = [...this.players].sort((p1, p2) => p2.score - p1.score);
+    for (let player of sorted_players) {
       let row = document.createElement("tr");
       let name = document.createElement("td");
       let score = document.createElement("td");
