@@ -1,0 +1,79 @@
+#control-panel {
+    padding: 20px;
+}
+
+#loader:hover {
+    transform: translate(-7px, 5px);
+    box-shadow: 7px -5px 0 0 green;
+}
+
+#default:hover {
+    transform: translate(-7px, 5px);
+    box-shadow: 7px -5px 0 0 blue;
+}
+
+#back:hover {
+    transform: translate(-7px, 5px);
+    box-shadow: 7px -5px 0 0 red;
+}
+
+.playarea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.playarea h1 {
+    font-size: 3em;
+}
+
+.playarea h2 {
+    font-size: 2em;
+}
+
+.playarea input {
+    padding: 0 20px;
+    font-size: 2em;
+    border: 1px solid black;
+    border-radius: 20px;
+}
+
+.playarea input:focus {
+    border: 1px solid blue;
+    outline: none;
+}
+
+.playarea input:required {
+    border: 1px solid black;
+}
+
+.playarea input:invalid {
+    border: 2px solid red;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.playarea button.choice-btn {
+    width: 5em;
+    height: 5em;
+}
+
+.playarea button:hover {
+    transform: translate(-7px, 5px);
+    box-shadow: 7px -5px 0 0 orange;
+}
+
+.playarea * {
+    margin: 10px;
+}

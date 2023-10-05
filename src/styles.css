@@ -46,13 +46,19 @@ section:hover {
     box-shadow: 2px 2px 30px 5px black;
 }
 
-button {
+a, button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
     margin: 0 10px;
     background-color: transparent;
     border: 1px solid black;
     border-radius: 10px;
 
+    color: black;
     font-size: 2em;
+    text-decoration: none;
     width: 5em;
     height: 2em;
     transition: all 0.1s;
