@@ -77,7 +77,7 @@ class Game {
         return false;
       }
 
-      this.players.push(new PseudoPlayer(name_input.value));
+      this.players.push(new PseudoPlayer(name_input.value, this.rules));
       this.ai_selection();
     });
 
@@ -128,7 +128,7 @@ class Game {
       // NOTE: input.value is not empty, and must therefore be
       // a number
       for (let i = 1; i <= Number(ai_input.value); ++i) {
-        this.players.push(new AiPlayer(i));
+        this.players.push(new AiPlayer(i, this.rules));
       }
 
       this.play();
@@ -218,7 +218,7 @@ class Game {
     button_container.appendChild(scoreboard);
 
     // Get the choices of the players
-    let choices = this.players.map((p) => p.get_choice(this.rules));
+    let choices = this.players.map((p) => p.get_choice());
 
     for (let i = 0; i < this.players.length; ++i) {
       // Create the choice block
@@ -376,9 +376,10 @@ class PseudoPlayer extends Player {
   /**
    * Create a new pseudo-player.
    * @param {string} name - The name of the player.
+   * @param {Rules} rules - The rules of the game.
    */
-  constructor(name) {
-    super(name);
+  constructor(name, rules) {
+    super(name, rules);
   }
 
   /**

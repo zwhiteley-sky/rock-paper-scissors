@@ -182,18 +182,19 @@ export class RuleError extends Error {
 export class Player {
   /**
    * Create a new player.
-   * @param {string} name - The name of the player
+   * @param {string} name - The name of the player.
+   * @param {Rules} rules - The rules of the game.
    */
-  constructor(name) {
+  constructor(name, rules) {
     this.name = name;
+    this.rules = rules;
     this.score = 0;
   }
 
   /**
    * Get the choice of the player (e.g., Rock).
-   * @param {Rules} rules - The rules of the RPS-style game.
    */
-  get_choice(rules) {
+  get_choice() {
     throw new TypeError("not implemented");
   }
 }
@@ -205,19 +206,19 @@ export class AiPlayer extends Player {
   /**
    * Create a new AI player.
    * @param {string} number - The number of the AI player.
+   * @param {Rules} rules - The rules of the game.
    */
-  constructor(number) {
-    super(`Robot ${number}`);
+  constructor(number, rules) {
+    super(`Robot ${number}`, rules);
   }
 
   /**
    * Get the choice of the AI player.
-   * @param {Rules} rules - The rules of the RPS-style game.
    * @returns {string} The choice the AI player made (it is randomly chosen
    * from the list of possible choices).
    */
-  get_choice(rules) {
-    let choices = rules.choices;
+  get_choice() {
+    let choices = this.rules.choices;
     return choices[Math.floor(Math.random() * choices.length)];
   }
 }
